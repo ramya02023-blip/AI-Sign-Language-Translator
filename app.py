@@ -2,9 +2,7 @@ from flask import Flask, render_template, Response, jsonify,request
 import cv2
 import mediapipe as mp
 import time
-import win32com.client
 import sqlite3
-speaker=win32com.client.Dispatch("SAPI.SpVoice")
 
 app = Flask(__name__)
 def init_db():
@@ -221,7 +219,7 @@ def generate_frames():
                 )
 
                 if gesture != last_spoken and time.time() - last_time > 2:
-                    speaker.Speak(gesture)
+                    #speaker.Speak(gesture)
                     save_gesture(gesture)
                     last_spoken = gesture
                     last_time = time.time()
@@ -321,7 +319,7 @@ def back_camera():
 @app.route('/emergency_alert')
 def emergency_alert():
 
-    speaker.Speak("Emergency! Please help me. I need assistance.")
+    #speaker.Speak("Emergency! Please help me. I need assistance.")
 
     return jsonify({
         "message": "Emergency Alert Sent!"
