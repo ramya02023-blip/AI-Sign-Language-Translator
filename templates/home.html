@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Sign Language Translator</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="hero">
+
+    <h1> SignBridge </h1>
+
+    <p>
+        Convert Sign Language into Text and Voice using AI
+    </p>
+    <br>
+
+
+<br><br>
+    <a href="/recognition" onclick="fetch('/start_camera')">
+        <button class="start-btn">
+            Start Recognition
+        </button>
+    </a>
+    <br><br>
+    <button class="emergency-btn" onclick="emergencyAlert()">
+    🚨 Emergency Alert
+    </button>
+
+</div>
+
+<div id="infoModal" class="modal">
+
+    <div class="modal-content">
+
+        <span class="close-btn" onclick="closeModal()">
+            ✖
+        </span>
+
+        <h2 id="modalTitle"></h2>
+
+        <p id="modalText"></p>
+
+        <button onclick="closeModal()">
+            Close
+        </button>
+
+    </div>
+
+</div>
+<script>
+    function showInfo(type){
+
+    let title = "";
+    let text = "";
+
+    if(type=="realtime"){
+        title = "🎥 Real-Time Detection";
+        text = "Live hand tracking using AI. Detects gestures instantly and displays results in real time.";
+    }
+
+    if(type=="voice"){
+        title = "🔊 Voice Output";
+        text = "Converts recognized sign language gestures into clear speech automatically.";
+    }
+
+    if(type=="ai"){
+        title = "🤖 MediaPipe AI";
+        text = "Tracks hand landmarks and finger positions accurately using Google MediaPipe.";
+    }
+
+    document.getElementById("modalTitle").innerText = title;
+    document.getElementById("modalText").innerText = text;
+
+    document.getElementById("infoModal").style.display = "flex";
+}
+
+function closeModal(){
+
+    document.getElementById("infoModal").style.display = "none";
+
+}
+function emergencyAlert() {
+
+    fetch('/emergency_alert')
+    .then(response => response.json())
+    .then(data => {
+
+        alert(data.message);
+
+    });
+
+}
+</script>
+
+</body>
+</html>

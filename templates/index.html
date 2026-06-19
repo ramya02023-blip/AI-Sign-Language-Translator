@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recognition</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="recognition-container">
+
+    <h1 class="title">
+    </h1>
+
+    <a href="/">
+        <button class="stop-btn" onclick="stopCamera()">
+            🛑 Stop Recognition
+        </button>
+    </a>
+    
+<div style="margin:20px;">
+    <button onclick="frontCamera()">
+        📷 Front Camera
+    </button>
+
+    <button onclick="backCamera()">
+        📷 Back Camera
+    </button>
+</div>
+<div class="main-container">
+    <div class="camera-card">
+
+        <img src="{{ url_for('video') }}" width="800">
+
+    </div>
+
+    <div class="gesture-card">
+
+        <h2 id="gesture">
+    Waiting...
+</h2>
+
+<hr>
+
+<h3>Gesture History</h3>
+
+<table border="1" width="100%">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Gesture</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+
+    <tbody id="historyTable">
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+
+<script>
+function updateGesture() {
+
+    fetch('/gesture')
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            document.getElementById("gesture").innerText =
+                "Gesture : " + data.gesture;
+
+        });
+}
+
+setInterval(updateGesture, 500);
+</script>
+<script>
+function stopCamera() {
+
+    fetch('/stop_camera')
+    .then(() => {
+
+        window.location = "/";
+
+    });
+
+}
+</script>
+
+<script>
+
+function frontCamera() {
+
+    fetch('/front_camera')
+    .then(() => {
+
+        location.reload();
+
+    });
+
+}
+
+function backCamera() {
+
+    fetch('/back_camera')
+    .then(() => {
+
+        location.reload();
+
+    });
+
+}
+
+</script>
+<script>
+let lastGesture = "";
+
+setInterval(async () => {
+
+    let response = await fetch("/gesture");
+    let data = await response.json();
+
+    let gesture = data.gesture;
+
+    if (gesture && gesture !== lastGesture) {
+
+        lastGesture = gesture;
+
+    }
+
+}, 1000);
+function loadHistory() {
+
+    fetch('/history')
+    .then(response => response.json())
+    .then(data => {
+
+        let table = document.getElementById("historyTable");
+
+        if (!table) return;
+
+        table.innerHTML = "";
+
+        data.forEach(row => {
+
+            table.innerHTML += `
+            <tr>
+                <td>${row[0]}</td>
+                <td>${row[1]}</td>
+                <td>${row[2]}</td>
+            </tr>`;
+        });
+
+    });
+}
+
+setInterval(loadHistory, 2000);
+
+loadHistory();
+</script>
+</body>
+</html>
